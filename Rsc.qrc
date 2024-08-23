@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>rsc/background.png</file>
+        <file>rsc/live.png</file>
+        <file>rsc/user.png</file>
+        <file>rsc/password.png</file>
+        <file>rsc/username.png</file>
+        <file>rsc/close.png</file>
+        <file>rsc/min.png</file>
+    </qresource>
+</RCC>
