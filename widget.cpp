@@ -51,16 +51,20 @@ void Widget::pressCloseButton()
 void Widget::pressLogButton()
 {
     QString strUsername = ui->lineEdit_name->text();
-    QString strPassword = ui->lineEdit_name->text();
+    QString strPassword = ui->lineEdit_pwd->text();
 
     Pack pack;
     pack.append(strUsername);
     pack.append(strPassword);
     pack.setOperationType(LOGIN);
 
+    /*
     QStringList strlist = pack.getData();
     qDebug() << strlist[0];
     qDebug() << strlist[1];
+    */
+
+
 
 }
 

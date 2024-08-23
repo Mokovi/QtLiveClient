@@ -3,15 +3,16 @@
 
 #include <QStringList>
 #include <QString>
+#include <QByteArray>
 
 enum OperationType{
-    INVALID_TYPE,
+    INVALID_TYPE = 0,
     LOGIN,
     SIGNIN
 };
 
 enum LogStatus{
-    INVALID_LOG_STATUS,
+    INVALID_LOG_STATUS = 0,
     LOG_NAME_RULE_ERROR,
     LOG_PWD_RULE_ERROR,
     LOG_REAPEAT_LOG_ERROR,
@@ -20,7 +21,7 @@ enum LogStatus{
 };
 
 enum SignStatus{
-    INVALID_SIGN_STATUS,
+    INVALID_SIGN_STATUS = 0,
     SIGN_NAME_RULE_ERROR,
     SIGN_PWD_RULE_ERROR,
     SIGN_NAME_EXIST_ERROR,
@@ -34,28 +35,25 @@ public:
     Pack();
     ~Pack();
 
-    char* data() {return (char*)this;}
-    unsigned int size() {return packSize;}
-    void setOperationType(OperationType operationType){this->operationType = operationType;}
-    void setLogStatus(LogStatus logStatus){this->status = logStatus;}
-    void setSignStatus(SignStatus signStatus){this->status = signStatus;}
+    char* data() { return (char*)this; }
+    unsigned int size() { return packSize; }
+    void setOperationType(OperationType operationType) { this->operationType = operationType; }
+    void setLogStatus(LogStatus logStatus) { this->status = logStatus; }
+    void setSignStatus(SignStatus signStatus) { this->status = signStatus; }
 
-    unsigned char getOperationType(){return operationType;}
-    unsigned char getLogStatus(){return status;}
-    unsigned char getSignStatus(){return status;}
-
+    unsigned char getOperationType() { return operationType; }
+    unsigned char getLogStatus() { return status; }
+    unsigned char getSignStatus() { return status; }
 
     void clear();
     void append(const QString& str);
     QStringList getData();
-
 
 private:
     unsigned int packSize;
     unsigned char operationType;
     unsigned char status;
     char dataBuff[1024];
-
 };
 
 #endif // PACK_H
