@@ -19,14 +19,17 @@ SOURCES += \
     main.cpp \
     mycontrolwidgets.cpp \
     pack.cpp \
+    signin.cpp \
     widget.cpp
 
 HEADERS += \
     mycontrolwidgets.h \
     pack.h \
+    signin.h \
     widget.h
 
 FORMS += \
+    signin.ui \
     widget.ui
 
 # Default rules for deployment.
@@ -40,3 +43,8 @@ RESOURCES += \
 DISTFILES += \
     rsc/密码.png \
     rsc/用户.png
+
+
+#MATERIAL
+LIBS += $$PWD/libs/libcomponents.a
+INCLUDEPATH += $$PWD/LIBS/Include
