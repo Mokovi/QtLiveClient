@@ -21,44 +21,53 @@ void Pack::clear()
     memset(dataBuff, 0, sizeof(dataBuff));
 }
 
-void Pack::append(const QString &str)
+QStringList Pack::getData()
 {
-    QByteArray byteArray = str.toUtf8();  // 转为UTF-8字节数组
-    unsigned short strSize = byteArray.size();  // 获取字节数组的大小
-    if (packSize + 2 + strSize > sizeof(dataBuff)) {
-        // 防止越界
+    unsigned int read_count = 0;
+    unsigned short size = 0;
+    QStringList strlist;
+
+    while(true)
+    {
+        if (read_count + 2 > sizeof(dataBuff)) break;  // 检查缓冲区是否越界
+        memcpy(&size, dataBuff + read_count, 2);
+        read_count += 2;
+
+        if (read_count + size > sizeof(dataBuff)) break;  // 检查缓冲区是否越界
+        QByteArray temp(dataBuff + read_count, size);
+        read_count += size;
+
+        QString strdata = QString::fromLocal8Bit(temp);
+        if(!strdata.isEmpty())
+        {
+            strlist.append(strdata);
+        }
+        if(0 == dataBuff[read_count])  // 如果没有更多数据，退出循环
+        {
+            break;
+        }
+    }
+
+    return strlist;
+}
+
+void Pack::append(const QString& val)
+{
+    QByteArray byteArray = val.toLocal8Bit();
+    unsigned short size = byteArray.size();
+
+    if (packSize - 6 + 2 + size > sizeof(dataBuff))  // 检查缓冲区是否有足够空间
+    {
+        // 错误处理：缓冲区空间不足
         return;
     }
 
-    memcpy(dataBuff + packSize, &strSize, 2);  // 复制字符串长度
+    memcpy(dataBuff + (packSize-6), &size, 2); // 复制size数据
     packSize += 2;
 
-    memcpy(dataBuff + packSize, byteArray.data(), strSize);  // 复制字符串内容
-    packSize += strSize;
+    memcpy(dataBuff + (packSize-6), byteArray.data(), size); // 复制字符串数据
+    packSize += size;
 }
 
-QStringList Pack::getData()
-{
-    unsigned int readCount = 0;  // 记录已读取的字节数
-    unsigned short size = 0;  // 用于存储一条语句的长度
-    QStringList strList;
 
-    while (readCount + 2 <= packSize) {  // 确保有足够的字节读取长度
-        memcpy(&size, dataBuff + readCount, 2);  // 读取字符串长度
-        readCount += 2;
 
-        if (readCount + size > packSize || size >= sizeof(dataBuff)) {
-            break;  // 防止越界读取
-        }
-
-        QByteArray byteArray(dataBuff + readCount, size);  // 提取对应长度的字节数据
-        readCount += size;
-
-        QString strData = QString::fromUtf8(byteArray);  // 从UTF-8字节数组转为QString
-        if (!strData.isEmpty()) {
-            strList.append(strData);
-        }
-    }
-
-    return strList;
-}

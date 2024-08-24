@@ -11,7 +11,6 @@ Widget::Widget(QWidget *parent)
     connect(ui->toolButton_min, &QToolButton::clicked, this, &Widget::pressMinButton);
     connect(ui->toolButton_close, &QToolButton::clicked, this, &Widget::pressCloseButton);
     connect(ui->pushButton_login, &QPushButton::clicked, this, &Widget::pressLogButton);
-    connectToServer();
 }
 
 Widget::~Widget()
@@ -19,16 +18,26 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::connectToServer()
+bool Widget::connectToServer()
 {
-    clientSocket->connectToHost("127.0.0.1", 13145);
-    if(!clientSocket->waitForConnected(3000))
+    if(clientSocket->state() == QAbstractSocket::ConnectedState)
     {
-        qDebug() << "无法连接到服务器！";
+        return true;
     }
-    else {
-        qDebug() << "成功连接到服务器！";
+    else
+    {
+        clientSocket->connectToHost("127.0.0.1", 13145);
+        if(!clientSocket->waitForConnected(3000))
+        {
+            qDebug() << "无法连接到服务器！";
+            return false;
+        }
+        else {
+            qDebug() << "成功连接到服务器！";
+            return true;
+        }
     }
+
 }
 
 void Widget::initWidgets()
@@ -50,21 +59,15 @@ void Widget::pressCloseButton()
 
 void Widget::pressLogButton()
 {
-    QString strUsername = ui->lineEdit_name->text();
-    QString strPassword = ui->lineEdit_pwd->text();
-
-    Pack pack;
-    pack.append(strUsername);
-    pack.append(strPassword);
-    pack.setOperationType(LOGIN);
-
-    /*
-    QStringList strlist = pack.getData();
-    qDebug() << strlist[0];
-    qDebug() << strlist[1];
-    */
-
-
-
+    if(connectToServer())
+    {
+        QString strUsername = ui->lineEdit_name->text();
+        QString strPassword = ui->lineEdit_pwd->text();
+        Pack pack;
+        pack.append(strUsername);
+        pack.append(strPassword);
+        pack.setOperationType(LOGIN);
+        clientSocket->write(pack.data(), pack.size());
+    }
 }
 

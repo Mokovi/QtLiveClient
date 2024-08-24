@@ -8,6 +8,7 @@
 #include <QToolButton>
 #include "mycontrolwidgets.h"
 #include "pack.h"
+#include <QMessageBox>
 
 
 QT_BEGIN_NAMESPACE
@@ -23,7 +24,7 @@ public:
     ~Widget();
 
 private:
-    void connectToServer();
+    bool connectToServer();
     void initWidgets();
 
 private slots:
