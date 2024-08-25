@@ -24,7 +24,6 @@ Widget::~Widget()
 
 void Widget::initWidgets()
 {
-
     setWindowFlags(Qt::FramelessWindowHint | windowFlags()); // 去除边框
     ui->lineEdit_pwd->setEchoMode(QLineEdit::Password); // 设置密码隐藏
     ui->toolButton_close->setStyleSheet("background-color: rgba(251, 115, 115, 0);"); // toolButton去除背景色
@@ -51,6 +50,11 @@ bool Widget::checkPwdRule(QString &password) const
     else {
         return true;
     }
+}
+
+void Widget::toRoomSelectPic()
+{
+
 }
 
 void Widget::mousePressEvent(QMouseEvent *event)
@@ -148,6 +152,38 @@ void Widget::onConnectionError(QAbstractSocket::SocketError socketError)
     disconnect(clientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onConnectionError(QAbstractSocket::SocketError)));
 }
 
+
+void Widget::handleLogBackData()
+{
+    Pack pack;
+    clientSocket->read(pack.data(), pack.size());
+    qDebug()<<pack.getOperationType();
+    qDebug() << pack.getLogStatus();
+    if(pack.getOperationType() != LOGIN) return;
+    switch ((LogStatus)pack.getLogStatus()) {
+    case LOG_NAME_RULE_ERROR:
+        QMessageBox::warning(this,"警告", "用户名长度不符合规范（3-12）");
+        break;
+    case LOG_PWD_RULE_ERROR:
+        QMessageBox::warning(this,"警告", "密码长度不符合规范（3-12）");
+        break;
+    case LOG_REAPEAT_LOG_ERROR:
+        QMessageBox::warning(this,"警告", "该账户已经登录");
+        break;
+    case LOG_INPUT_NAME_ERROR:
+    case LOG_INPUT_PWD_ERROR:
+        QMessageBox::warning(this,"警告", "用户名或者密码错误。");
+        break;
+    case LOG_DB_ERROR:
+        QMessageBox::warning(this,"警告", "数据库错误");
+        break;
+    case LOG_SUCCESS:
+        QMessageBox::information(this,"通知", "登录成功！");
+        toRoomSelectPic();
+        break;
+    }
+}
+
 void Widget::sendLoginData()
 {
     QString strUsername = ui->lineEdit_name->text();
@@ -173,6 +209,7 @@ void Widget::sendLoginData()
     pack.append(strPassword);
     pack.setOperationType(LOGIN);
     clientSocket->write(pack.data(), pack.size());
+    connect(clientSocket,&QTcpSocket::readyRead, this, &Widget::handleLogBackData);
     // 重新启用按钮并隐藏进度条
     ui->pushButton_login->setEnabled(true);
     ui->progressBar->setVisible(false);

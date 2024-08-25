@@ -34,6 +34,7 @@ private slots:
     void sendLoginData();
     void onConnected();
     void onConnectionError(QAbstractSocket::SocketError socketError);
+    void handleSignBackData();
 
 private:
     Ui::signIn *ui;
@@ -46,6 +47,7 @@ private:
     bool checkNameRule(QString& username) const;
     bool checkPwdRule(QString& password) const;
     bool checkEmailRule(QString& email) const;
+
 };
 
 #endif // SIGNIN_H

@@ -31,6 +31,7 @@ private:
     void initWidgets();
     bool checkNameRule(QString& username) const;
     bool checkPwdRule(QString& password) const;
+    void toRoomSelectPic();
 
 
 protected:
@@ -46,6 +47,7 @@ private slots:
     void sendLoginData();
     void onConnected();
     void onConnectionError(QAbstractSocket::SocketError socketError);
+    void handleLogBackData();
 
 private:
     Ui::Widget *ui;

@@ -141,6 +141,7 @@ void signIn::sendLoginData()
     pack.append(strEmail);
     pack.setOperationType(SIGNIN);
     clientSocket->write(pack.data(), pack.size());
+    connect(clientSocket, &QTcpSocket::readyRead, this, &signIn::handleSignBackData);
     // 重新启用按钮并隐藏进度条
     ui->pushButton_signin->setEnabled(true);
     ui->progressBar_2->setVisible(false);
@@ -190,4 +191,36 @@ bool signIn::checkEmailRule(QString &email) const
     QRegularExpressionMatch match = emailRegex.match(email);
 
     return match.hasMatch();
+}
+
+void signIn::handleSignBackData()
+{
+    Pack pack;
+    clientSocket->read(pack.data(), pack.size());
+    if(pack.getOperationType() != SIGNIN) return;
+    qDebug()<<pack.getOperationType();
+    qDebug() << pack.getLogStatus();
+    switch ((SignStatus)pack.getSignStatus()) {
+    case SIGN_NAME_RULE_ERROR:
+        QMessageBox::warning(this,"警告", "用户名长度不符合规范（3-12）");
+        break;
+    case SIGN_PWD_RULE_ERROR:
+        QMessageBox::warning(this,"警告", "密码长度不符合规范（3-12）");
+        break;
+    case SIGN_EMAIL_RULE_ERROR:
+        QMessageBox::warning(this,"警告", "邮箱格式不符合规范");
+        break;
+    case SIGN_NAME_EXIST_ERROR:
+        QMessageBox::warning(this,"警告", "用户名已存在");
+        break;
+    case SIGN_EMAIL_EXIST_ERROR:
+        QMessageBox::warning(this,"警告", "该邮箱已经绑定用户");
+        break;
+    case SIGN_DB_ERROR:
+        QMessageBox::warning(this,"警告", "数据库错误");
+        break;
+    case SIGN_SUCCESS:
+        QMessageBox::information(this,"通知", "注册成功！");
+        break;
+    }
 }

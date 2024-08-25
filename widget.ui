@@ -14,42 +14,7 @@
    <string>Widget</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QFrame{
-border:sold 10px rgba(0,0,0);
-background-image:url(E:/study/QT_Project/LiveSystem/LiveSystemClient/rsc/background.png);
-}
-
-QLineEdit{
-color:#8d98a1;
-background-color:rgb(255, 255, 255);
-font-size:16px;
-border-style:outset;
-border-radius:10px;
-font-style:MingLiU-ExtB;
-}
-QPushButton{
-background:#ced1d8;
-border-style:outset;
-border-radius:10px;
-font-style:MingLiU-ExtB;
-}
-QPushButton:pressed{
-background-color:rgb(224,0,0);
-border-style:inset;
-font-style:MingLiU-ExtB;
-}
-QCheckBox{
-background:rgba(85,170,255,0);
-color:white;
-font-style:MingLiU-ExtB;
-}
-QLabel{
-background:rgba(85,170,255,0);
-color:white;
-font-style:MingLiU-ExtB;
-font-size:14px;
-}
-background-color: rgb(94, 94, 94);</string>
+   <string notr="true"/>
   </property>
   <widget class="QFrame" name="frame">
    <property name="geometry">

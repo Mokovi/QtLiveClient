@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
         created_at (TIMESTAMP): 账号创建时间。
         updated_at (TIMESTAMP): 账号信息最近更新的时间。
         last_login (TIMESTAMP): 最近一次登录的时间。
-        status (TINYINT): 账号状态（例如，0=未激活，1=激活，2=封禁等）。
+        accountStatus  (TINYINT): 账号状态（例如，0=未激活，1=激活，2=封禁等）。
+        onlineState  (TINYINT): 登录状态 ENUM('offline', 'online') DEFAULT 'offline'
     5.
 
 */
