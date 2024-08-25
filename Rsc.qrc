@@ -7,5 +7,6 @@
         <file>rsc/username.png</file>
         <file>rsc/close.png</file>
         <file>rsc/min.png</file>
+        <file>rsc/email.png</file>
     </qresource>
 </RCC>

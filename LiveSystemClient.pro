@@ -18,12 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mycontrolwidgets.cpp \
+    mythread.cpp \
     pack.cpp \
     signin.cpp \
     widget.cpp
 
 HEADERS += \
     mycontrolwidgets.h \
+    mythread.h \
     pack.h \
     signin.h \
     widget.h

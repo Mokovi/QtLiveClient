@@ -69,7 +69,7 @@ background-color: rgb(94, 94, 94);</string>
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QLineEdit" name="lineEdit_name">
+   <widget class="QtMaterialAutoComplete" name="lineEdit_name">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -82,7 +82,7 @@ background-color: rgb(94, 94, 94);</string>
      <string>Username</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_pwd">
+   <widget class="QtMaterialAutoComplete" name="lineEdit_pwd">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -108,7 +108,7 @@ background-color: rgb(94, 94, 94);</string>
      <string>登录</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="label_user_pic">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -124,7 +124,7 @@ background-color: rgb(94, 94, 94);</string>
      <pixmap resource="Rsc.qrc">:/rsc/user.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="label_logo">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -140,7 +140,7 @@ background-color: rgb(94, 94, 94);</string>
      <pixmap resource="Rsc.qrc">:/rsc/live.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="label_name_logo">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -156,7 +156,7 @@ background-color: rgb(94, 94, 94);</string>
      <pixmap resource="Rsc.qrc">:/rsc/username.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="label_pwd_logo">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -172,7 +172,7 @@ background-color: rgb(94, 94, 94);</string>
      <pixmap resource="Rsc.qrc">:/rsc/password.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="label_font">
     <property name="geometry">
      <rect>
       <x>70</x>
@@ -197,7 +197,7 @@ background-color: rgb(94, 94, 94);</string>
      <string>Live</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="toolButton_min">
+   <widget class="MyToolButtonMin" name="toolButton_min">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -213,7 +213,7 @@ background-color: rgb(94, 94, 94);</string>
      <string>-</string>
     </property>
    </widget>
-   <widget class="MyToolButton" name="toolButton_close">
+   <widget class="MyToolButtonClose" name="toolButton_close">
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -229,13 +229,78 @@ background-color: rgb(94, 94, 94);</string>
      <string>X</string>
     </property>
    </widget>
+   <widget class="QtMaterialCircularProgress" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>50</y>
+      <width>291</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="MyToolButtonFont" name="toolButton_signin">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>270</y>
+      <width>50</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgba(0,0,0,0);</string>
+    </property>
+    <property name="text">
+     <string>注册</string>
+    </property>
+   </widget>
+   <widget class="MyToolButtonFont" name="toolButton_getpwd">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>270</y>
+      <width>70</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgba(0,0,0,0);</string>
+    </property>
+    <property name="text">
+     <string>找回密码</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MyToolButton</class>
+   <class>MyToolButtonClose</class>
    <extends>QToolButton</extends>
-   <header>mycontrolwidgets.h</header>
+   <header location="global">mycontrolwidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtMaterialAutoComplete</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qtmaterialautocomplete.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtMaterialCircularProgress</class>
+   <extends>QProgressBar</extends>
+   <header location="global">qtmaterialcircularprogress.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyToolButtonMin</class>
+   <extends>QToolButton</extends>
+   <header location="global">mycontrolwidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyToolButtonFont</class>
+   <extends>QToolButton</extends>
+   <header location="global">mycontrolwidgets.h</header>
   </customwidget>
  </customwidgets>
  <resources>
