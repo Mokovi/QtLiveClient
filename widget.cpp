@@ -7,6 +7,9 @@ Widget::Widget(QWidget *parent)
     , clientSocket(new QTcpSocket(this))
     , picSign(new signIn(nullptr))
     , isDragging(false)
+    , picRoomSelect(new RoomSelect(nullptr))
+    , heartbeatTimer(new QTimer(this))
+    , picLiveRoom(new LiveRoom(nullptr))
 {
     ui->setupUi(this);
     initWidgets();
@@ -18,6 +21,7 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
+
     delete picSign;
     delete ui;
 }
@@ -52,10 +56,28 @@ bool Widget::checkPwdRule(QString &password) const
     }
 }
 
-void Widget::toRoomSelectPic()
+void Widget::toRoomSelectPic(Pack &pack)
 {
+    username = pack.getData()[0];
+    this->close();
+    picSign->close();
+    picRoomSelect->show();
+    picRoomSelect->setUsername(username);
+    heartbeatTimer->start(3000);
+    connect(heartbeatTimer, &QTimer::timeout, this, [this](){
+        Pack pack;
+        pack.setOperationType(HEARTBEAT);
+        clientSocket->write(pack.data(), pack.size());
+    });
+    connect(picRoomSelect,&RoomSelect::createRoom, this, [this](){
+        Pack pack;
+        pack.setOperationType(CREATEROOM);
+        pack.append(username);
+        clientSocket->write(pack.data(), pack.size());
+    });
 
 }
+
 
 void Widget::mousePressEvent(QMouseEvent *event)
 {
@@ -156,32 +178,58 @@ void Widget::onConnectionError(QAbstractSocket::SocketError socketError)
 void Widget::handleLogBackData()
 {
     Pack pack;
-    clientSocket->read(pack.data(), pack.size());
-    qDebug()<<pack.getOperationType();
-    qDebug() << pack.getLogStatus();
-    if(pack.getOperationType() != LOGIN) return;
-    switch ((LogStatus)pack.getLogStatus()) {
-    case LOG_NAME_RULE_ERROR:
-        QMessageBox::warning(this,"警告", "用户名长度不符合规范（3-12）");
-        break;
-    case LOG_PWD_RULE_ERROR:
-        QMessageBox::warning(this,"警告", "密码长度不符合规范（3-12）");
-        break;
-    case LOG_REAPEAT_LOG_ERROR:
-        QMessageBox::warning(this,"警告", "该账户已经登录");
-        break;
-    case LOG_INPUT_NAME_ERROR:
-    case LOG_INPUT_PWD_ERROR:
-        QMessageBox::warning(this,"警告", "用户名或者密码错误。");
-        break;
-    case LOG_DB_ERROR:
-        QMessageBox::warning(this,"警告", "数据库错误");
-        break;
-    case LOG_SUCCESS:
-        QMessageBox::information(this,"通知", "登录成功！");
-        toRoomSelectPic();
-        break;
+    unsigned int size = 0;
+
+    while (clientSocket->bytesAvailable() > 4) // 确保有足够的字节解析包头
+    {
+        int rst = clientSocket->read(pack.data(), 4); // 读取包头（4字节）
+        size = pack.size();
+        qDebug() << rst << "\t" << size;
+        if(rst == 0 || size <= 4) break; // 如果没有数据或包大小无效，退出循环
+
+        if (clientSocket->bytesAvailable() < size - 4) {
+            return; // 数据不足，等待更多数据到来
+        }
+        clientSocket->read(pack.data() + 4, size - 4); // 读取包体数据
+
     }
+    if(pack.getOperationType() == LOGIN)
+    {
+        switch ((LogStatus)pack.getLogStatus()) {
+        case LOG_NAME_RULE_ERROR:
+            QMessageBox::warning(this,"警告", "用户名长度不符合规范（3-12）");
+            break;
+        case LOG_PWD_RULE_ERROR:
+            QMessageBox::warning(this,"警告", "密码长度不符合规范（3-12）");
+            break;
+        case LOG_REAPEAT_LOG_ERROR:
+            QMessageBox::warning(this,"警告", "该账户已经登录");
+            break;
+        case LOG_INPUT_NAME_ERROR:
+        case LOG_INPUT_PWD_ERROR:
+            QMessageBox::warning(this,"警告", "用户名或者密码错误。");
+            break;
+        case LOG_DB_ERROR:
+            QMessageBox::warning(this,"警告", "数据库错误");
+            break;
+        case LOG_SUCCESS:
+            QMessageBox::information(this,"通知", "登录成功！");
+            toRoomSelectPic(pack);
+            break;
+        }
+    }
+    else if(pack.getOperationType() == CREATEROOM)
+    {
+        QString roomId = pack.getData()[0];
+        if(roomId != "invalid"){
+            picRoomSelect->close();
+            picLiveRoom->setRoomId(roomId);
+            picLiveRoom->show();
+            picLiveRoom->setRoomOwner(username);
+            qDebug()<<username;
+        }
+    }
+
 }
 
 void Widget::sendLoginData()

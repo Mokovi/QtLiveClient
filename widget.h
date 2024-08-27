@@ -12,6 +12,9 @@
 #include "qtmaterialautocomplete.h"
 #include "qtmaterialcircularprogress.h"
 #include "signin.h"
+#include "roomselect.h"
+#include <QTimer>
+#include "liveroom.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -31,13 +34,14 @@ private:
     void initWidgets();
     bool checkNameRule(QString& username) const;
     bool checkPwdRule(QString& password) const;
-    void toRoomSelectPic();
+    void toRoomSelectPic(Pack &pack);
 
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
+
 
 private slots:
     void pressMinButton();
@@ -55,5 +59,10 @@ private:
     signIn *picSign;
     bool isDragging; // 标志是否正在拖动
     QPoint lastPos;  // 记录鼠标点击的位置
+    QString username;
+    QString roomId;
+    RoomSelect *picRoomSelect;
+    QTimer *heartbeatTimer;//用于心跳检测
+    LiveRoom *picLiveRoom;
 };
 #endif // WIDGET_H

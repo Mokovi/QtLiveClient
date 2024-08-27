@@ -8,7 +8,11 @@
 enum OperationType{
     INVALID_TYPE = 0,
     LOGIN,
-    SIGNIN
+    SIGNIN,
+    HEARTBEAT,
+    CREATEROOM,
+    JOINROOM,
+    UPDATAROOMLIST
 };
 
 enum LogStatus{
